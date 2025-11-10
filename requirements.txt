@@ -1,8 +1,9 @@
-streamlit
-pandas
-numpy
-matplotlib
-plotly
-gensim
-scipy
+streamlit>=1.37
+pandas>=2.0
+numpy>=1.24
+matplotlib>=3.8
+plotly>=5.20
+gensim>=4.3
+scipy>=1.10
+scikit-learn>=1.4
 openpyxl
