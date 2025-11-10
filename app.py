@@ -99,7 +99,7 @@ with tab0:
     #### 📚 Corpus and Model Training
     PR-Embed includes **two sets of Word2Vec models** trained on peer-reviewed public relations scholarship:
 
-    1. **Full-Corpus Model** — trained on *all full texts* from six leading PR journals between 1970 and 2023:  
+    1. **Full-Corpus Model** — trained on *all full texts* from six leading PR journals between 2004 and 2024:  
        - *Public Relations Review (PRR)*  
        - *Journal of Public Relations Research (JPRR)*  
        - *Public Relations Inquiry (PRI)*  
