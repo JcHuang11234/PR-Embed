@@ -89,7 +89,7 @@ with tab0:
     This toolkit uses **Word2Vec (Skip-gram)** embeddings trained on overlapping five-word windows (5-grams)  
     to capture phrase-level semantics.  
     The **cosine similarity** between two word vectors indicates how semantically related they are  
-    (1 = identical meaning, 0 = unrelated).
+    (high = identical meaning, low = unrelated).
 
     🔗 [Learn more about Word2Vec embeddings →](https://medium.com/@manansuri/a-dummys-guide-to-word2vec-456444f3c673)  
     *Developed by Mikolov et al. (2013, Google Research).*
@@ -195,7 +195,7 @@ with tab0:
     - **Models:** One full-corpus model + yearly models for semantic drift analysis.  
     - **Topic model:** Structural Topic Model (Roberts et al., 2014) with 93 topics.  
     - **Integration:** Each topic and paper represented by an embedding vector for alignment.  
-    - **Similarity metric:** Cosine similarity (–1 to 1).  
+    - **Similarity metric:** Cosine similarity.  
     - **Interface:** Interactive Streamlit + Plotly visualization.  
 
     ---
