@@ -83,9 +83,9 @@ with tab0:
     Embeddings are **numerical representations of words, phrases, or documents** that capture meaning from their surrounding context.  
     Words that frequently appear together in similar contexts have **closer vectors** in a multi-dimensional semantic space.
 
-    For example, *activism*, *advocacy*, and *campaign* will appear close together,  
-    while *profit* or *finance* will be farther away.
-
+    For example, *coffee*, *tea*, and *espresso* cluster closely together, 
+    while *coffee* and *bicycle* lie much farther away from each other.
+    
     This toolkit uses **Word2Vec (Skip-gram)** embeddings trained on overlapping five-word windows (5-grams)  
     to capture phrase-level semantics.  
     The **cosine similarity** between two word vectors indicates how semantically related they are  
