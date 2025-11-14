@@ -228,13 +228,20 @@ with tab1:
         help="Start typing to find a word from the model vocabulary."
     )
     
-    topn = st.slider("Number of nearest neighbors", 5, 30, 10, key="word_neighbors")
+    # --- MODIFIED SLIDER ---
+    # The label is updated to reflect its dual purpose
+    topn = st.slider(
+        "Number of results to show (neighbors/papers)", 
+        5, 30, 10, 
+        key="word_topn_slider"
+    )
     
-    # --- "Show Neighbors" Section (No longer in a column) ---
+    # --- "Show Neighbors" Section ---
     if st.button("🔍 Show Neighbors"):
         if word != "(Type or select a word)":
             try:
-                neighbors = pd.DataFrame(word_neighbors(model, word, topn=topn), columns=["word", "similarity"])
+                # Uses topn variable
+                neighbors = pd.DataFrame(word_neighbors(model, word, topn=topn), columns=["word", "similarity"]) 
                 st.markdown(f"### 🔤 Nearest Neighbors of `{word}`")
 
                 import plotly.express as px
@@ -263,12 +270,14 @@ with tab1:
         else:
             st.info("Please select a valid word first.")
 
-    # --- "Show Top Papers" Section (No longer in a column) ---
+    # --- "Show Top Papers" Section ---
     if st.button("📄 Show Top Papers"):
         if word != "(Type or select a word)":
             try:
                 st.markdown(f"### 📄 Top Papers Related to `{word}`")
-                papers = top_papers_by_word(model, word, df, k=10)
+                # --- MODIFIED LINE ---
+                # Now uses the 'topn' variable from the slider instead of k=10
+                papers = top_papers_by_word(model, word, df, k=topn) 
                 st.dataframe(papers)
             except Exception as e:
                 st.warning(str(e))
@@ -398,9 +407,6 @@ with tab1:
             st.error(f"❌ Model `{model_tag}` not found in models folder.")
         except Exception as e:
             st.warning(str(e))
-
-
-
 
 # =============================================================================
 # TAB 2: PAPER-LEVEL (three-step exploration)
