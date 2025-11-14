@@ -584,6 +584,7 @@ with tab4:
     import numpy as np
     import pandas as pd
     import plotly.express as px
+    from pr_embed import list_models # Ensure list_models is imported if not already
 
     st.subheader("📈 Topic Projection along a Semantic Dimension")
 
@@ -637,7 +638,8 @@ with tab4:
     model_tag_dim = st.selectbox(
         "Select model:",
         available_models,
-        index=available_models.index("full") if "full" in available_models else 0
+        index=available_models.index("full") if "full" in available_models else 0,
+        key="tab4_model_select" # Added a unique key
     )
     model_dim = load_model(model_tag_dim)
 
@@ -710,6 +712,23 @@ with tab4:
             .reset_index(drop=True)
         )
 
+        # ------------------------------------------------------------
+        # DYNAMIC HEIGHT CALCULATION (MODIFIED SECTION)
+        # ------------------------------------------------------------
+        
+        # 1. Get the number of topics to plot
+        num_topics = len(topic_spectrum) 
+        
+        # 2. Define pixels-per-topic (adjust this to your liking)
+        pixels_per_topic = 25 
+        
+        # 3. Add a base height for title, axis, margins
+        base_height = 150 
+        
+        # 4. Calculate the total height
+        # We use max() to ensure a minimum height even if there are few topics
+        plot_height = max(600, (num_topics * pixels_per_topic) + base_height)
+
 
         # ------------------------------------------------------------
         # Better visualization: horizontal bar chart
@@ -724,7 +743,7 @@ with tab4:
             color="projection",
             color_continuous_scale="RdBu_r",
             range_color=[-1, 1],
-            height=1200,
+            height=plot_height,  # <-- USE THE DYNAMIC HEIGHT HERE
             title=f"Semantic Spectrum: {neg_word.upper()} ↔ {pos_word.upper()}",
             labels={"projection": "Projection Score"},
         )
@@ -755,4 +774,3 @@ with tab4:
             use_container_width=True,
             height=600
         )
-
