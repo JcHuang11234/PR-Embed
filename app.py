@@ -230,52 +230,50 @@ with tab1:
     
     topn = st.slider("Number of nearest neighbors", 5, 30, 10, key="word_neighbors")
     
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        if st.button("🔍 Show Neighbors"):
-            if word != "(Type or select a word)":
-                try:
-                    neighbors = pd.DataFrame(word_neighbors(model, word, topn=topn), columns=["word", "similarity"])
-                    st.markdown(f"### 🔤 Nearest Neighbors of `{word}`")
-    
-                    import plotly.express as px
-                    fig = px.bar(
-                        neighbors.sort_values("similarity", ascending=False),
-                        x="word",
-                        y="similarity",
-                        text="similarity",
-                        color="similarity",
-                        color_continuous_scale="Blues"
-                    )
-                    fig.update_traces(texttemplate="%{text:.2f}", textposition="outside")
-                    fig.update_layout(
-                        xaxis_title="Word",
-                        yaxis_title="Cosine Similarity",
-                        xaxis_tickangle=0,
-                        template="simple_white",
-                        height=400,
-                        margin=dict(l=40, r=40, t=40, b=40)
-                    )
-                    st.plotly_chart(fig, use_container_width=True)
-                    st.dataframe(neighbors)
-    
-                except Exception as e:
-                    st.warning(str(e))
-            else:
-                st.info("Please select a valid word first.")
-    
-    with col2:
-        if st.button("📄 Show Top Papers"):
-            if word != "(Type or select a word)":
-                try:
-                    st.markdown(f"### 📄 Top Papers Related to `{word}`")
-                    papers = top_papers_by_word(model, word, df, k=10)
-                    st.dataframe(papers)
-                except Exception as e:
-                    st.warning(str(e))
-            else:
-                st.info("Please select a valid word first.")
+    # --- "Show Neighbors" Section (No longer in a column) ---
+    if st.button("🔍 Show Neighbors"):
+        if word != "(Type or select a word)":
+            try:
+                neighbors = pd.DataFrame(word_neighbors(model, word, topn=topn), columns=["word", "similarity"])
+                st.markdown(f"### 🔤 Nearest Neighbors of `{word}`")
+
+                import plotly.express as px
+                fig = px.bar(
+                    neighbors.sort_values("similarity", ascending=False),
+                    x="word",
+                    y="similarity",
+                    text="similarity",
+                    color="similarity",
+                    color_continuous_scale="Blues"
+                )
+                fig.update_traces(texttemplate="%{text:.2f}", textposition="outside")
+                fig.update_layout(
+                    xaxis_title="Word",
+                    yaxis_title="Cosine Similarity",
+                    xaxis_tickangle=0,
+                    template="simple_white",
+                    height=400,
+                    margin=dict(l=40, r=40, t=40, b=40)
+                )
+                st.plotly_chart(fig, use_container_width=True)
+                st.dataframe(neighbors)
+
+            except Exception as e:
+                st.warning(str(e))
+        else:
+            st.info("Please select a valid word first.")
+
+    # --- "Show Top Papers" Section (No longer in a column) ---
+    if st.button("📄 Show Top Papers"):
+        if word != "(Type or select a word)":
+            try:
+                st.markdown(f"### 📄 Top Papers Related to `{word}`")
+                papers = top_papers_by_word(model, word, df, k=10)
+                st.dataframe(papers)
+            except Exception as e:
+                st.warning(str(e))
+        else:
+            st.info("Please select a valid word first.")
 
     st.divider()
 
