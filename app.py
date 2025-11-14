@@ -228,40 +228,50 @@ with tab1:
         help="Start typing to find a word from the model vocabulary."
     )
     
-    # --- MODIFIED SLIDER ---
-    # The label is updated to reflect its dual purpose
     topn = st.slider(
         "Number of results to show (neighbors/papers)", 
         5, 30, 10, 
         key="word_topn_slider"
     )
     
-    # --- "Show Neighbors" Section ---
+    # --- "Show Neighbors" Section (No longer in a column) ---
     if st.button("🔍 Show Neighbors"):
         if word != "(Type or select a word)":
             try:
-                # Uses topn variable
-                neighbors = pd.DataFrame(word_neighbors(model, word, topn=topn), columns=["word", "similarity"]) 
+                neighbors = pd.DataFrame(word_neighbors(model, word, topn=topn), columns=["word", "similarity"])
                 st.markdown(f"### 🔤 Nearest Neighbors of `{word}`")
 
+                # --- (MODIFIED PLOT SECTION) ---
+                
+                # 1. DYNAMIC HEIGHT CALCULATION
+                num_neighbors = len(neighbors)
+                pixels_per_neighbor = 25 
+                base_height = 150 
+                plot_height = max(400, (num_neighbors * pixels_per_neighbor) + base_height)
+
                 import plotly.express as px
+                
+                # 2. CHANGED TO HORIZONTAL BAR CHART
                 fig = px.bar(
-                    neighbors.sort_values("similarity", ascending=False),
-                    x="word",
-                    y="similarity",
+                    neighbors.sort_values("similarity", ascending=True), # Sort ascending
+                    x="similarity", # X is now similarity
+                    y="word",       # Y is now word
+                    orientation="h",  # Set orientation to horizontal
                     text="similarity",
                     color="similarity",
-                    color_continuous_scale="Blues"
+                    color_continuous_scale="Blues",
+                    height=plot_height # Use dynamic height
                 )
+                
+                # 3. UPDATED TRACES AND LAYOUT
                 fig.update_traces(texttemplate="%{text:.2f}", textposition="outside")
                 fig.update_layout(
-                    xaxis_title="Word",
-                    yaxis_title="Cosine Similarity",
-                    xaxis_tickangle=0,
+                    xaxis_title="Cosine Similarity",
+                    yaxis_title="Word",
                     template="simple_white",
-                    height=400,
-                    margin=dict(l=40, r=40, t=40, b=40)
+                    margin=dict(l=150, r=40, t=40, b=40) # Increase left margin for word labels
                 )
+                
                 st.plotly_chart(fig, use_container_width=True)
                 st.dataframe(neighbors)
 
@@ -270,13 +280,11 @@ with tab1:
         else:
             st.info("Please select a valid word first.")
 
-    # --- "Show Top Papers" Section ---
+    # --- "Show Top Papers" Section (No longer in a column) ---
     if st.button("📄 Show Top Papers"):
         if word != "(Type or select a word)":
             try:
                 st.markdown(f"### 📄 Top Papers Related to `{word}`")
-                # --- MODIFIED LINE ---
-                # Now uses the 'topn' variable from the slider instead of k=10
                 papers = top_papers_by_word(model, word, df, k=topn) 
                 st.dataframe(papers)
             except Exception as e:
@@ -382,32 +390,43 @@ with tab1:
             result_df = word_equation(model_selected, equation_input, topn=topn_eq)
 
             st.markdown(f"**Model Used:** `{model_tag}`")
-            st.dataframe(result_df)
-
+            
+            # --- ALSO MODIFY THIS PLOT TO BE HORIZONTAL & DYNAMIC ---
+            
+            # 1. DYNAMIC HEIGHT
+            num_results = len(result_df)
+            pixels_per_result = 25
+            base_height = 150
+            plot_height_eq = max(400, (num_results * pixels_per_result) + base_height)
+            
+            # 2. HORIZONTAL BAR CHART
             fig = px.bar(
-                result_df.sort_values("similarity", ascending=False),
-                x="word",
-                y="similarity",
+                result_df.sort_values("similarity", ascending=True), # Sort ascending
+                x="similarity", # X is similarity
+                y="word",       # Y is word
+                orientation="h",
                 text="similarity",
                 color="similarity",
-                color_continuous_scale="Blues"
+                color_continuous_scale="Blues",
+                height=plot_height_eq # Use dynamic height
             )
+            
+            # 3. UPDATED LAYOUT
             fig.update_traces(texttemplate="%{text:.2f}", textposition="outside")
             fig.update_layout(
-                xaxis_title="Word",
-                yaxis_title="Cosine Similarity",
-                xaxis_tickangle=0,
+                xaxis_title="Cosine Similarity",
+                yaxis_title="Word",
                 template="simple_white",
-                height=400,
-                margin=dict(l=40, r=40, t=40, b=40)
+                margin=dict(l=150, r=40, t=40, b=40) # Increase left margin
             )
+            
+            st.dataframe(result_df)
             st.plotly_chart(fig, use_container_width=True)
 
         except FileNotFoundError:
             st.error(f"❌ Model `{model_tag}` not found in models folder.")
         except Exception as e:
             st.warning(str(e))
-
 # =============================================================================
 # TAB 2: PAPER-LEVEL (three-step exploration)
 # =============================================================================
