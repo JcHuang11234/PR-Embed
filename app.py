@@ -272,7 +272,7 @@ with tab1:
                     margin=dict(l=150, r=40, t=40, b=40) # Increase left margin for word labels
                 )
                 
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width='stretch')
                 st.dataframe(neighbors)
 
             except Exception as e:
@@ -355,7 +355,7 @@ with tab1:
                 margin=dict(l=40, r=30, t=50, b=40)
             )
 
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
             st.dataframe(drift)
 
     st.divider()
@@ -421,7 +421,7 @@ with tab1:
             )
             
             st.dataframe(result_df)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
         except FileNotFoundError:
             st.error(f"❌ Model `{model_tag}` not found in models folder.")
@@ -509,7 +509,7 @@ with tab2:
                     uniformtext=dict(minsize=12, mode="hide"),
                 )
 
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width='stretch')
 
             except ValueError as e:
                 st.warning(str(e))
@@ -784,7 +784,7 @@ with tab4:
             margin=dict(l=180, r=40, t=60, b=40),
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
         
         # ------------------------------------------------------------
         # Table view
@@ -794,6 +794,6 @@ with tab4:
             topic_spectrum.style.format({"projection": "{:.3f}"}).background_gradient(
                 cmap="RdBu_r", vmin=-1, vmax=1
             ),
-            use_container_width=True,
+            width='stretch',
             height=600
         )
