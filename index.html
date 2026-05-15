@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PR-Embed Explorer</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>PR-Embed: Embedding and Topic Exploration Toolkit of Public Relations Literature</h1>
+        <p>A tool for exploring conceptual and semantic structures in Public Relations research. Use the tabs below to navigate word-level, topic-level, and paper-level explorations.</p>
+      </div>
+      <div class="status" id="loadStatus">Loading data...</div>
+    </header>
+
+    <nav class="tabs" aria-label="Sections">
+      <button class="tab active" data-tab="readme">Read Me</button>
+      <button class="tab" data-tab="word">Word-Level</button>
+      <button class="tab" data-tab="paper">Paper-Level</button>
+      <button class="tab" data-tab="topic">Topic-Level</button>
+      <button class="tab" data-tab="projection">Topic Projection</button>
+    </nav>
+
+    <main>
+      <section id="readme" class="panel active">
+        <article class="readme-content surface">
+          <p><strong>PR-Embed</strong> is an interactive system that combines <strong>semantic embeddings</strong> and <strong>topic modeling (STM)</strong> to analyze conceptual relationships in public relations research. It is built from 4,128 full-text articles published between 2004 and 2024 in six leading public relations journals. The system helps you explore how meanings, topics, and conceptual boundaries shift over time and across the literature.</p>
+
+          <details class="readme-fold" open>
+            <summary>What Are Embeddings?</summary>
+            <p>Embeddings are numerical representations of words, phrases, or documents that capture meaning from their surrounding context. Words that frequently appear together in similar contexts have closer vectors in a multi-dimensional semantic space.</p>
+            <p>For example, <em>coffee</em>, <em>tea</em>, and <em>espresso</em> cluster closely together, while <em>coffee</em> and <em>bicycle</em> lie much farther away from each other.</p>
+            <p>This toolkit uses <strong>Word2Vec (Skip-gram)</strong> embeddings trained on overlapping five-word windows (5-grams) to capture phrase-level semantics. The cosine similarity between two word vectors indicates how semantically related they are (high = identical meaning, low = unrelated).</p>
+            <p><a href="https://medium.com/@manansuri/a-dummys-guide-to-word2vec-456444f3c673" target="_blank" rel="noreferrer">Learn more about Word2Vec embeddings →</a><br />Developed by Mikolov et al. (2013, Google Research).</p>
+            <div class="readme-subsection">
+              <h3>Corpus and Model Training</h3>
+              <p>PR-Embed includes two sets of Word2Vec models trained on peer-reviewed public relations scholarship:</p>
+              <p><strong>Full-Corpus Model</strong> — trained on all full texts from six leading PR journals between 2004 and 2024:</p>
+              <ul>
+                <li><em>Public Relations Review (PRR)</em></li>
+                <li><em>Journal of Public Relations Research (JPRR)</em></li>
+                <li><em>Public Relations Inquiry (PRI)</em></li>
+                <li><em>Corporate Communications: An International Journal (CC)</em></li>
+                <li><em>Journal of Communication Management (JCM)</em></li>
+                <li><em>International Journal of Strategic Communication (IJSC)</em></li>
+              </ul>
+              <p>This model captures long-term, cumulative meanings across the field.</p>
+              <p><strong>Yearly Models</strong> — trained separately for each publication year. These allow you to trace semantic drift (how relationships between concepts evolve over time). For example, you can examine whether AI becomes more closely associated with ethics or automation in later years.</p>
+              <p>Each model uses identical preprocessing: lowercasing, punctuation removal, token filtering (≥ 25 occurrences for full-corpus, ≥ 10 for yearly), and a context window size of 5.</p>
+            </div>
+          </details>
+
+          <details class="readme-fold">
+            <summary>What Is Structural Topic Modeling (STM)?</summary>
+            <p>STM identifies latent topics in large text collections by grouping words that frequently co-occur. Each document is represented as a mixture of topics, and each topic is represented as a distribution of words.</p>
+            <ul>
+              <li><strong>Prob words:</strong> Most frequent words within a topic.</li>
+              <li><strong>FREX words:</strong> Words most exclusive to that topic.</li>
+              <li><strong>Topic proportions:</strong> How much of a document belongs to each topic.</li>
+            </ul>
+            <p>STM answers “What are people writing about?” while embeddings answer “How are those concepts related linguistically?”</p>
+            <p><a href="https://sicss.io/2020/materials/day3-text-analysis/topic-modeling/rmarkdown/Topic_Modeling.html" target="_blank" rel="noreferrer">Learn more about STM →</a></p>
+          </details>
+
+          <details class="readme-fold">
+            <summary>How PR-Embed Combines STM and Embeddings</summary>
+            <p>STM provides topic-level insights, where the unit of analysis is a topic or a paper. Embeddings provide word-level insights, focusing on how individual terms and concepts relate to one another in semantic space. PR-Embed embeds both topics (from STM) and words/papers (from Word2Vec) into a shared space, enabling comparison of conceptual alignment and distance.</p>
+            <p>This integration connects what scholars write about (topics and documents) with how those ideas relate linguistically (word meanings and associations).</p>
+          </details>
+
+          <details class="readme-fold readme-tab-guide">
+            <summary>Exploration Tabs</summary>
+            <p><strong>Word-Level:</strong> Explore nearest neighbors, semantic drift between two words, and word equations that reveal derived or contextualized meanings.</p>
+            <p><strong>Paper-Level:</strong> Search papers by title or author, inspect paper information, view topic composition, and find semantically similar papers.</p>
+            <p><strong>Topic-Level:</strong> Browse the 93 STM topics, inspect Prob and FREX keywords, and view representative papers aligned with each topic.</p>
+            <p><strong>Topic Projection:</strong> Project topics along a semantic dimension between two anchor words and compare how topics align across the continuum.</p>
+          </details>
+
+          <details class="readme-fold">
+            <summary>Technical Summary</summary>
+            <ul>
+              <li><strong>Embedding architecture:</strong> Skip-gram Word2Vec (Mikolov et al., 2013).</li>
+              <li><strong>Corpora:</strong> Six leading PR journals (2004–2024).</li>
+              <li><strong>Models:</strong> One full-corpus model + yearly models for semantic drift analysis.</li>
+              <li><strong>Topic model:</strong> Structural Topic Model (Roberts et al., 2014) with 93 topics.</li>
+              <li><strong>Integration:</strong> Each topic and paper represented by an embedding vector for alignment.</li>
+              <li><strong>Similarity metric:</strong> Cosine similarity.</li>
+              <li><strong>Interface:</strong> Interactive Streamlit + Plotly visualization.</li>
+            </ul>
+            <p>Refer to the paper cited below for more technical detail on the corpus, modeling choices, validation, and interpretation.</p>
+          </details>
+
+          <p class="readme-citation"><strong>Citation:</strong><br />Huang, J., Hurst, B., Capizzo, L. W., &amp; Zhou, A. (In Press). Corporate Social Responsibility (CSR) versus Corporate Social Advocacy (CSA): Conceptual Boundaries, Distinct Roots, and Growing Convergence Revealed by Topic Modeling and Word Embedding. <em>Public Relations Review</em>.</p>
+        </article>
+      </section>
+
+      <section id="word" class="panel">
+        <div class="surface tab-intro">
+          <h2>Word-Level Exploration</h2>
+          <p>Use this tab to investigate how individual concepts and word relationships behave in the embedding space. It is not limited to the CSA/CSR examples from the paper; you can enter any word available in the model vocabulary.</p>
+          <ul>
+            <li><strong>Nearest Neighbors:</strong> Finds the most similar words to a concept. Try <code>csa</code>, <code>csr</code>, <code>ai</code>, <code>ethics</code>, or <code>human</code>.</li>
+            <li><strong>Top Papers By Word:</strong> Finds papers whose embeddings are most aligned with the selected concept.</li>
+            <li><strong>Semantic Drift:</strong> Tracks how the relationship between two words changes over time. Try pairs such as <code>csa</code> and <code>csr</code>, or <code>ai</code> and <code>human</code>.</li>
+            <li><strong>Word Equations:</strong> Performs vector calculations with words. The equation can be simple, such as <code>ai + ethics</code>, or a three-term analogy, such as <code>ai + ethics - automation</code>.</li>
+          </ul>
+        </div>
+        <div class="toolbar">
+          <label>Model <select id="wordModel"></select></label>
+          <label>Word <input id="wordInput" list="vocabList" value="csa" /></label>
+          <label>Results <input id="wordTopN" type="number" min="5" max="30" value="10" /></label>
+          <button id="showNeighbors">Show Neighbors</button>
+          <button id="showWordPapers">Show Top Papers</button>
+        </div>
+        <datalist id="vocabList"></datalist>
+        <div class="split">
+          <div class="surface">
+            <h2>Nearest Neighbors</h2>
+            <div id="neighborChart" class="chart empty">Choose a word and run neighbors.</div>
+          </div>
+          <div class="surface">
+            <h2>Top Papers By Word</h2>
+            <div id="wordPaperTable" class="empty">Choose a word and run top papers.</div>
+          </div>
+        </div>
+
+        <div class="surface">
+          <h2>Semantic Drift Between Two Words</h2>
+          <div class="toolbar compact">
+            <label>Word 1 <input id="driftWordA" list="vocabList" value="csa" /></label>
+            <label>Word 2 <input id="driftWordB" list="vocabList" value="csr" /></label>
+            <button id="showDrift">Plot Semantic Drift</button>
+          </div>
+          <div class="drift-layout">
+            <div id="driftChart" class="svg-chart empty">Choose two words to plot semantic drift.</div>
+            <div id="driftTable"></div>
+          </div>
+        </div>
+
+        <div class="surface">
+          <h2>Word Equation Explorer</h2>
+          <div class="toolbar compact">
+            <label>Equation <input id="equationInput" value="csr + political - environment" /></label>
+            <label>Results <input id="equationTopN" type="number" min="5" max="30" value="10" /></label>
+            <button id="runEquation">Compute Word Equation</button>
+          </div>
+          <div id="equationChart" class="chart empty">Enter an equation to compute semantic neighbors.</div>
+        </div>
+      </section>
+
+      <section id="paper" class="panel">
+        <div class="surface tab-intro">
+          <h2>Paper-Level Exploration</h2>
+          <p>Use this tab to explore how individual research papers connect to both topics and embeddings. Search by paper title or author name, then open the selected paper to view its topic composition and semantically similar papers.</p>
+          <ul>
+            <li><strong>Search Paper:</strong> Type a title keyword or an author name to find a paper.</li>
+            <li><strong>Topic Composition:</strong> Shows how the selected paper is distributed across all 93 STM topics.</li>
+            <li><strong>Most Similar Papers:</strong> Finds studies that are closest to the selected paper in the embedding space.</li>
+          </ul>
+        </div>
+        <div class="toolbar">
+          <label class="grow">Search Paper <input id="paperSearch" list="paperList" placeholder="Type title or author" /></label>
+          <button id="selectPaper">Search Paper</button>
+        </div>
+        <datalist id="paperList"></datalist>
+        <div class="split paper-layout">
+          <div class="surface">
+            <h2>Paper Information</h2>
+            <div id="paperInfo" class="empty">Select a paper to begin.</div>
+          </div>
+          <div class="surface">
+            <h2>Topic Composition</h2>
+            <p class="note">All 93 STM topics are shown. Larger topics are labeled; click any small block to see its topic name.</p>
+            <div id="topicClickInfo" class="topic-click-info">Click a topic block for details.</div>
+            <div id="paperTreemap" class="treemap empty">Topic proportions will appear here.</div>
+          </div>
+        </div>
+        <div class="surface">
+          <h2>Most Similar Papers</h2>
+          <div id="similarPapers" class="empty">Run similar papers after selecting a paper.</div>
+        </div>
+      </section>
+
+      <section id="topic" class="panel">
+        <div class="surface tab-intro">
+          <h2>Topic-Level Exploration</h2>
+          <p>Use this tab to browse the 93 STM topics extracted from the PR corpus. Each topic represents a recurring thematic pattern in the literature and includes keywords and representative papers.</p>
+          <ul>
+            <li><strong>Prob words:</strong> The most frequent words within a topic.</li>
+            <li><strong>FREX words:</strong> Words that are both frequent and especially exclusive to that topic.</li>
+            <li><strong>Representative papers:</strong> Papers most strongly aligned with each topic.</li>
+          </ul>
+        </div>
+        <div class="toolbar">
+          <label>Top papers per topic <input id="topicTopN" type="number" min="5" max="30" value="10" /></label>
+        </div>
+        <div id="topicList" class="topic-list"></div>
+      </section>
+
+      <section id="projection" class="panel">
+        <div class="surface tab-intro">
+          <h2>Topic Projection</h2>
+          <p>Use this tab to project STM topics along a semantic dimension defined by two anchor words. This helps compare where topics sit between two conceptual poles, and it can be used for dimensions beyond CSA versus CSR.</p>
+          <ul>
+            <li><strong>Negative Pole and Positive Pole:</strong> Enter two anchor words to define the axis.</li>
+            <li><strong>Examples:</strong> Try <code>csr</code> → <code>csa</code>, <code>human</code> → <code>ai</code>, or <code>ethics</code> → <code>automation</code>.</li>
+            <li><strong>Projection Score:</strong> Topics farther left align more with the negative pole; topics farther right align more with the positive pole.</li>
+          </ul>
+        </div>
+        <div class="toolbar">
+          <label>Model <select id="projectionModel"></select></label>
+          <label>Negative Pole <input id="negativePole" list="projectionVocabList" value="csr" /></label>
+          <label>Positive Pole <input id="positivePole" list="projectionVocabList" value="csa" /></label>
+          <button id="projectTopics">Project Topics</button>
+        </div>
+        <datalist id="projectionVocabList"></datalist>
+        <div class="surface">
+          <h2>Topic Spectrum</h2>
+          <div id="projectionAxis" class="axis-label">Negative Pole  ←          →  Positive Pole</div>
+          <div id="projectionChart" class="chart empty">Choose two poles and project topics.</div>
+        </div>
+      </section>
+    </main>
+
+    <script src="assets/app.js"></script>
+  </body>
+</html>
