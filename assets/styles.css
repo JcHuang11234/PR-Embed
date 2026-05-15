@@ -403,7 +403,7 @@ label.grow input {
 .bar-fill.negative {
   left: auto;
   right: 50%;
-  background: var(--orange);
+  background: var(--blue-green);
 }
 
 .bar-fill.positive {
